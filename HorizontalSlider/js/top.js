@@ -1,10 +1,10 @@
-(function ($) {
+(function($) {
   'use strict';
   var isMobile = $(window).width() <= 839;
   var $window = $(window);
 
   // visual slider
-  (function () {
+  (function() {
     var $visualSlider = $('.js-visual-slide');
     var $thumbSlider = $('.js-thumb-slide');
     var $thumbSliderItem = $thumbSlider.find('.thumb-item');
@@ -18,30 +18,30 @@
     });
 
     $thumbSliderItem.eq(0).addClass('active');
-    $visualSlider.on('beforeChange', function (event, slick, currentSlide, nextSlide) {
+    $visualSlider.on('beforeChange', function(event, slick, currentSlide, nextSlide) {
       $thumbSliderItem.removeClass('active');
       $thumbSliderItem.eq(nextSlide).addClass('active');
     });
 
-    $thumbSliderItem.click(function () {
+    $thumbSliderItem.click(function() {
       var currentIndex = $(this).data('index');
       $visualSlider.slick('slickGoTo', Number(currentIndex));
       $visualSlider.slick('slickPlay');
     });
 
-    $thumbPrevArrow.click(function () {
+    $thumbPrevArrow.click(function() {
       $visualSlider.slick('slickPrev');
     });
 
-    $thumbNextArrow.click(function () {
+    $thumbNextArrow.click(function() {
       $visualSlider.slick('slickNext');
     });
   })();
 
   // visual banner
-  (function () {
+  (function() {
     var $visualBannerLink = $('.js-visual-banner-link');
-    $visualBannerLink.click(function () {
+    $visualBannerLink.click(function() {
       var target = $(this).data('href');
       $('html, body').animate(
         {
@@ -53,7 +53,7 @@
   })();
 
   // tvcm section
-  (function () {
+  (function() {
     var $tvcm = $('.js-tvcm-video');
     function hoverVideo() {
       if (!isMobile) {
@@ -73,13 +73,16 @@
   })();
 
   // tvcm modal
-  (function () {
+  (function() {
     var $btnTVCM = $('.js-tvcm-button');
     var $modalTVCM = $('.js-tvcm-modal');
     var $btnClosedTVCM = $('.js-tvcm-close-button');
-    $btnTVCM.click(function () {
+    var $videoTVCM = $('.js-tvcm-video');
+    $btnTVCM.click(function() {
       var $currentBtn = $(this);
       var $video = $currentBtn.siblings('.js-tvcm-video');
+
+      $currentBtn.addClass('hide');
       if (isMobile) {
         $video.get(0).play();
       } else {
@@ -95,8 +98,18 @@
         }
       }
     });
+    $videoTVCM.on('ended', function() {
+      $(this)
+        .siblings('.js-tvcm-button')
+        .removeClass('hide');
+    });
+    $videoTVCM.on('pause', function() {
+      $(this)
+        .siblings('.js-tvcm-button')
+        .removeClass('hide');
+    });
 
-    $(document).on('click', '.js-tvcm-modal-video', function () {
+    $(document).on('click', '.js-tvcm-modal-video', function() {
       $(this)
         .siblings('.js-tvcm-modal-button')
         .removeClass('hide');
@@ -105,12 +118,13 @@
         .pause();
     });
 
-    $btnClosedTVCM.click(function () {
+    $btnClosedTVCM.click(function() {
       $modalTVCM.removeClass('opened');
+      $btnTVCM.removeClass('hide');
       $('.js-tvcm-modal-button').remove();
       $('.js-tvcm-modal-video').remove();
     });
-    $(document).on('click', '.js-tvcm-modal-button', function () {
+    $(document).on('click', '.js-tvcm-modal-button', function() {
       $(this)
         .siblings('.js-tvcm-modal-video')
         .get(0)
@@ -120,7 +134,7 @@
   })();
 
   // memory scroll
-  (function () {
+  (function() {
     var $memoryBlock = $('.js-memory');
     var memoryBlockHeight = 0;
     var $memoryWrapper = $('.js-memory-wrapper');
@@ -128,10 +142,10 @@
     var $btnPrevScroll = $('.js-memory-button-prev');
     var $btnNextScroll = $('.js-memory-button-next');
     var bannerWidth = $banner.width();
-    var scrollStep = $window.width() / 6;
+    var scrollStep = 150;
     var scrollTopMemoryBlock = 0;
 
-    $window.scroll(function () {
+    $window.scroll(function() {
       var scrollTop = $window.scrollTop();
       scrollTopMemoryBlock = $memoryBlock.offset().top;
       var scrollLeftBanner = scrollTop - scrollTopMemoryBlock;
@@ -169,24 +183,33 @@
         }
         $memoryBlock.removeClass('top-position');
       }
-    })
-      ;
-    $btnPrevScroll.click(function () {
+    });
+    $btnPrevScroll.click(function() {
       if (!$(this).hasClass('disabled')) {
         var top = $window.scrollTop();
-        $window.scrollTop(top - scrollStep);
+        $('html, body').animate(
+          {
+            scrollTop: top - scrollStep,
+          },
+          200
+        );
       }
     });
-    $btnNextScroll.click(function () {
+    $btnNextScroll.click(function() {
       if (!$(this).hasClass('disabled')) {
         var top = $window.scrollTop();
-        $window.scrollTop(top + scrollStep);
+        $('html, body').animate(
+          {
+            scrollTop: top + scrollStep,
+          },
+          200
+        );
       }
     });
   })();
 
   // outdoor
-  (function () {
+  (function() {
     var $outdoorSlider = $('.js-outdoot-slide');
     var $outdoorThumb = $('.js-outdoor-thumb');
     var $outdoorThumbItem = $outdoorThumb.find('.outdoor-thumb-item');
@@ -206,15 +229,20 @@
       ],
     });
 
-    $outdoorSlider.on('beforeChange', function (event, slick, currentSlide, nextSlide) {
+    $outdoorSlider.on('beforeChange', function(event, slick, currentSlide, nextSlide) {
       $outdoorThumbItem.removeClass('active');
       $outdoorThumbItem.eq(nextSlide).addClass('active');
     });
 
-    $outdoorThumbItem.click(function () {
+    $outdoorThumbItem.click(function() {
       var currentIndex = $(this).data('index');
       $outdoorSlider.slick('slickGoTo', Number(currentIndex));
       $outdoorSlider.slick('slickPlay');
     });
+  })();
+
+  // animation
+  (function() {
+    new WOW().init();
   })();
 })(jQuery);

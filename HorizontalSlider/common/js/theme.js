@@ -30,8 +30,7 @@
     }
   });
 
-  var observer = lozad('.lozad');
-  observer.observe();
+  new Blazy();
 })(jQuery);
 
 // menu
